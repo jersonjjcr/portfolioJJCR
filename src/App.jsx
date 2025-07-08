@@ -8,11 +8,52 @@ import './i18n';
 import cafeladoImg from './assets/cafelado.png';
 import hmiImg from './assets/hmi.png';
 import smahsImg from './assets/smahs.png';
+import ambicodeImg from './assets/ambicode.png';
+import nutriImg from './assets/nutri.png';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
+
+  // Estado para el formulario de contacto
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [formStatus, setFormStatus] = useState(null); // 'success' | 'error' | null
+  const [loading, setLoading] = useState(false);
+
+  // Cambia este endpoint por el tuyo de Formspree
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkgbljrv';
+
+  const handleFormChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setFormStatus(null);
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
+      });
+      if (res.ok) {
+        setFormStatus('success');
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        setFormStatus('error');
+      }
+    } catch {
+      setFormStatus('error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
@@ -192,6 +233,52 @@ function App() {
         <section id="projects">
           <h2>{t('projects')}</h2>
           <ul className="project-list">
+            {/* Proyecto NutriLAB */}
+            <li className="project-item">
+              <a
+                href="https://nutri-lab-mmsl.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: '28px', textDecoration: 'none', color: 'inherit', width: '100%' }}
+              >
+                <img
+                  src={nutriImg}
+                  alt="NutriLAB"
+                  className="project-img"
+                  style={{ width: 120, height: 80, objectFit: 'contain', borderRadius: 12, background: '#e0f7fa' }}
+                />
+                <div>
+                  <span className="project-title">NutriLAB</span>
+                  <p style={{ margin: '10px 0 0 0', fontSize: '1em', color: 'var(--text-color)' }}>
+                    Plataforma web para la gestión de planes nutricionales, seguimiento de pacientes y análisis de datos alimenticios. Permite a los profesionales de la salud crear, modificar y monitorear dietas personalizadas, así como visualizar el progreso de sus pacientes de manera eficiente y segura.
+                  </p>
+                  <a href="https://github.com/jersonjjcr/NutriLAB" target="_blank" rel="noopener noreferrer" className="about-btn" style={{marginTop: '8px', display: 'inline-block'}}>Repositorio</a>
+                </div>
+              </a>
+            </li>
+            {/* Proyecto Ambicode */}
+            <li className="project-item">
+              <a
+                href="https://ambicode.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: '28px', textDecoration: 'none', color: 'inherit', width: '100%' }}
+              >
+                <img
+                  src={ambicodeImg}
+                  alt="Ambicode"
+                  className="project-img"
+                  style={{ width: 120, height: 80, objectFit: 'contain', borderRadius: 12, background: '#e0f7fa' }}
+                />
+                <div>
+                  <span className="project-title">Ambicode</span>
+                  <p style={{ margin: '10px 0 0 0', fontSize: '1em', color: 'var(--text-color)' }}>
+                    Plataforma web para la gestión y reporte de incidencias ambientales en espacios públicos. Ambicode permite a los usuarios registrar problemas como residuos, daños en infraestructuras o situaciones de riesgo ambiental, asignar prioridad y ubicación, y facilitar la comunicación entre ciudadanos y administradores. Incluye panel de administración para el seguimiento y resolución eficiente de los reportes, promoviendo la participación ciudadana y el cuidado del entorno urbano.
+                  </p>
+                  <a href="https://github.com/jersonjjcr/Ambicode" target="_blank" rel="noopener noreferrer" className="about-btn" style={{marginTop: '8px', display: 'inline-block'}}>Repositorio</a>
+                </div>
+              </a>
+            </li>
             <li className="project-item">
               <a
                 href="https://cafelado.netlify.app/"
@@ -209,6 +296,7 @@ function App() {
                   <p style={{ margin: '10px 0 0 0', fontSize: '1em', color: 'var(--text-color)' }}>
                     {t('project1Desc')}
                   </p>
+                  <a href="https://github.com/jersonjjcr/caf-lado" target="_blank" rel="noopener noreferrer" className="about-btn" style={{marginTop: '8px', display: 'inline-block'}}>Repositorio</a>
                 </div>
               </a>
             </li>
@@ -229,6 +317,7 @@ function App() {
                   <p style={{ margin: '10px 0 0 0', fontSize: '1em', color: 'var(--text-color)' }}>
                     {t('project2Desc')}
                   </p>
+                  <a href="https://github.com/jersonjjcr/HMITURBINA" target="_blank" rel="noopener noreferrer" className="about-btn" style={{marginTop: '8px', display: 'inline-block'}}>Repositorio</a>
                 </div>
               </a>
             </li>
@@ -249,12 +338,64 @@ function App() {
                   <p style={{ margin: '10px 0 0 0', fontSize: '1em', color: 'var(--text-color)' }}>
                     {t('project3Desc')}
                   </p>
+                  <a href="https://github.com/jersonjjcr/tsr" target="_blank" rel="noopener noreferrer" className="about-btn" style={{marginTop: '8px', display: 'inline-block'}}>Repositorio</a>
                 </div>
               </a>
             </li>
           </ul>
         </section>
       </div>
+      {/* Nueva sección de contacto */}
+      <section className="contact-section" id="contact">
+        <h2>Contacto</h2>
+        <form className="contact-form" onSubmit={handleFormSubmit}>
+          <label htmlFor="name">Nombre</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Tu nombre"
+            className="contact-input"
+            required
+            value={form.name}
+            onChange={handleFormChange}
+          />
+
+          <label htmlFor="email">Correo Electrónico</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="tu@email.com"
+            className="contact-input"
+            required
+            value={form.email}
+            onChange={handleFormChange}
+          />
+
+          <label htmlFor="message">Mensaje</label>
+          <textarea
+            id="message"
+            name="message"
+            placeholder="Tu mensaje aquí..."
+            className="contact-textarea"
+            rows={6}
+            required
+            value={form.message}
+            onChange={handleFormChange}
+          />
+
+          <button type="submit" className="contact-btn-form" disabled={loading}>
+            {loading ? 'Enviando...' : 'Enviar Mensaje'}
+          </button>
+          {formStatus === 'success' && (
+            <p style={{ color: 'green', marginTop: '16px' }}>¡Mensaje enviado correctamente!</p>
+          )}
+          {formStatus === 'error' && (
+            <p style={{ color: 'red', marginTop: '16px' }}>Hubo un error al enviar el mensaje. Intenta nuevamente.</p>
+          )}
+        </form>
+      </section>
       <footer className="footer">
         <div className="footer-content">
           <span>&copy; {new Date().getFullYear()} Jerson Contreras</span>
@@ -267,14 +408,6 @@ function App() {
             </a>
             <a href="mailto:jersoncontrerasroman@gmail.com" title="Email">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Email" className="footer-icon" />
-            </a>
-            <a href="https://www.instagram.com/jersonj_contreras/?hl=es-la" target="_blank" rel="noopener noreferrer" title="Instagram">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
-                alt="Instagram"
-                className="footer-icon"
-                style={{ background: "#fff", borderRadius: "8px" }}
-              />
             </a>
           </div>
         </div>
